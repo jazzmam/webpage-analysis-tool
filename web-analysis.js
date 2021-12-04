@@ -1,6 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
-const url = 'https://www.npmtrends.com';
+//const url = 'https://www.npmtrends.com';
+const url = 'https://mochajs.org/';
 
 const getUniqueTagsAndTheirAmount = async (urlAddress) => {
 	try {
@@ -55,16 +56,21 @@ const getLongestPath = async (urlAddress) => {
 	try {
 		const { data } = await axios.get(urlAddress);
 		const $ = cheerio.load(data);
+		var childrenAmount = 0;
 		const longestPath = [];
 
 		$('*').each((index, node) => {
 
-			if (node.type == 'tag') {
+			if (node.type === 'tag' && node.children.length !== 0) {
 
-				console.log("TAG: ", node)
-			} else {
-				console.log("NOT TAG: ", node)
+				console.log("TAG WITH CHILDREN: ", node);
+				childrenAmount++;
+				console.log("CHILDREN AMOUNT: ", childrenAmount);
+				longestPath.push(node.name);
+				console.log("FULL PATH: ", longestPath);
 			}
+
+			return index < 8;
 		});
 
 		return longestPath;
@@ -73,15 +79,10 @@ const getLongestPath = async (urlAddress) => {
 	}
 };
 
-getLongestPath(url)
-	.then(
-		(longestPath) => 
-			console.log("The longest path: " + JSON.stringify(longestPath))
-	);
 
-	// TO SOLVE:
-	// 1) <script> is shown as not a tag
-	// 2) are async scripts in the list?
+getLongestPath(url);
+
+
 
 	// const buildPath = (node) => {
 	// 	console.log(node);
