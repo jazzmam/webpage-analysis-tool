@@ -51,9 +51,6 @@ const getUniqueTagsAndTheirAmount = async (urlAddress) => {
 // 				 }).tag
 // 	));
 
-
-
-
 const getLongestPath = async (urlAddress) => {
 	try {
 		const { data } = await axios.get(urlAddress);
@@ -88,42 +85,4 @@ const getLongestPath = async (urlAddress) => {
 };
 
 getLongestPath(url);
-
-
-
-
-// DON'T REMOVE
-
-// const getLongestPath = async (urlAddress) => {
-// 	try {
-// 		const { data } = await axios.get(urlAddress);
-// 		const $ = cheerio.load(data);
-// 		var childrenAmount = 0;
-// 		var longestPath = [];
-// 		var paths = [];
-
-// 		$('*').each((index, node) => {
-
-// 			if (node.type === 'tag' && node.children.length !== 0) {
-
-// 				console.log("TAG WITH CHILDREN: ", node);
-// 				childrenAmount++;
-// 				console.log("CHILDREN AMOUNT: ", childrenAmount);
-// 				longestPath.push(node.name);
-// 				console.log("FULL PATH: ", longestPath);
-// 			}
-
-// 			return index < 8;
-// 		});
-
-
-// 		return longestPath;
-// 		return paths;
-// 	} catch (error) {
-// 		throw error;
-// 	}
-// };
-
-// getLongestPath(url);
-
 
