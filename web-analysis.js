@@ -62,20 +62,24 @@ const getLongestPath = async (urlAddress) => {
 		var longestPath = [];
 		var paths = [];
 
+		function findAllPaths(startNode, currentAmount) {
+	        for (var i = 0; i < startNode.children.length; i++) {
+	            var child = startNode.children[i];
+	            if ( child.next == null ) {
+	                paths.push(currentAmount);
+	            } else {
+	            	console.log("CURRENT AMOUNT", currentAmount)
+	            	console.log("NAME", startNode.children[i].name)
+	            	console.log("TYPE", startNode.children[i].type)
 
-		console.log($('body').children)
+	            	if ( startNode.children[i].type == 'tag' ) {
+						findAllPaths(startNode.children[i], currentAmount+1);
+	            	}
+	            }
+	        }
+	    }
 
-		// function findAllPaths(startNode, currentCost) {
-	 //        for (var i = 0; i < startNode.children.length; i++) {
-	 //            var child = startNode.children[i];
-	 //            if ( child.next == null ) {
-	 //                paths.push(currentCost);
-	 //            } else {
-	 //                findAllPaths(QATree[child.next], currentCost+1);
-	 //            }
-	 //        }
-	 //    }
-	 //    findAllPaths($('body'), 1);
+	    findAllPaths($('body')['0'], 1);
 
 		return paths;
 	} catch (error) {
@@ -122,25 +126,4 @@ getLongestPath(url);
 
 // getLongestPath(url);
 
-////
-
-// function shortAndLong(QATree, startNode) {
-//     var paths = [];
-//     function findAllPaths(startNode, currentCost) {
-//         for (var i = 0; i < startNode.answers.length; i++) {
-//             var child = startNode.answers[i];
-//             if (child.nextQuestion == null) {
-//                 paths.push(currentCost);
-//             }else {
-//                 findAllPaths(QATree[child.nextQuestion], currentCost+1);
-//             }
-//         }
-//     }
-//     findAllPaths(startNode, 1);
-//     return [Math.min.apply(Math, paths), Math.max.apply(Math, paths)]
-// }
-// console.debug('ans',shortAndLong(QAndAObj, QAndAObj[1]));//returns [2, 4]
-// console.debug('ans',shortAndLong(QAndAObj, QAndAObj[2]));//returns [1, 3]
-// console.debug('ans',shortAndLong(QAndAObj, QAndAObj[3]));//returns [1, 2]
-// console.debug('ans',shortAndLong(QAndAObj, QAndAObj[4]));//returns [1, 1]
 
