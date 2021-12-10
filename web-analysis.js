@@ -65,16 +65,17 @@ const getLongestPath = async (urlAddress) => {
 	            var child = startNode.children[i];
 	            if ( child.next == null ) {
 					if ( child.type != 'tag' ) {
-						console.log("NOT A TAG");
+						console.log(child.name, " IS NOT A TAG");
 					} else {
 						amount.push(currentAmount);
-						console.log("ITS A TAG, THE LAST ONE FROM SIBLINGS")
+						console.log(child.name, " IS A TAG, THE LAST ONE FROM SIBLINGS. CURRENT AMOUNT = ", currentAmount)
 					}
 	            }
 				else {
-	            	console.log("TYPE", startNode.children[i].type);
 					console.log("NAME", startNode.children[i].name);
-					console.log("CURRENT AMOUNT", currentAmount);
+	            	console.log("TYPE", startNode.children[i].type);
+					// when node is not a tag, currentAmount is already increased here 
+					console.log("CURRENT AMOUNT = ", currentAmount);
 
 	            	if ( startNode.children[i].type == 'tag' ) {
 						findAllPaths(startNode.children[i], currentAmount+1);
