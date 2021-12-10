@@ -51,27 +51,38 @@ const getUniqueTagsAndTheirAmount = async (urlAddress) => {
 // 				 }).tag
 // 	));
 
+// TODO - reuse the code of fetching data - create a helper function
+
 const getLongestPath = async (urlAddress) => {
 	try {
 		const { data } = await axios.get(urlAddress);
 		const $ = cheerio.load(data);
-		var childrenAmount = 0;
 		var longestPath = [];
-		var paths = [];
+		var amount = [];
 
 		function findAllPaths(startNode, currentAmount) {
 	        for (var i = 0; i < startNode.children.length; i++) {
 	            var child = startNode.children[i];
 	            if ( child.next == null ) {
-	                paths.push(currentAmount);
-	            } else {
-	            	console.log("CURRENT AMOUNT", currentAmount)
-	            	console.log("NAME", startNode.children[i].name)
-	            	console.log("TYPE", startNode.children[i].type)
+					if ( child.type != 'tag' ) {
+						console.log("NOT A TAG");
+					} else {
+						amount.push(currentAmount);
+						console.log("ITS A TAG, THE LAST ONE FROM SIBLINGS")
+					}
+	            }
+				else {
+	            	console.log("TYPE", startNode.children[i].type);
+					console.log("NAME", startNode.children[i].name);
+					console.log("CURRENT AMOUNT", currentAmount);
 
 	            	if ( startNode.children[i].type == 'tag' ) {
 						findAllPaths(startNode.children[i], currentAmount+1);
-	            	}
+	            	} 
+					//  TypeError: Cannot read property 'length' of undefined (kuomet textas paduodamas kaip node)
+					// else {
+					// 	findAllPaths(startNode.children[i], currentAmount);
+					// }
 	            }
 	        }
 	    }
