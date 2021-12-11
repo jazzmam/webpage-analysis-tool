@@ -58,6 +58,8 @@ const getLongestPath = async (urlAddress) => {
 		const { data } = await axios.get(urlAddress);
 		const $ = cheerio.load(data);
 		var longestPath = [];
+
+		// when should this array be used?
 		var amount = [];
 
 		function findAllPaths(startNode, currentAmount) {
@@ -65,25 +67,34 @@ const getLongestPath = async (urlAddress) => {
 	            var child = startNode.children[i];
 	            if ( child.next == null ) {
 					if ( child.type != 'tag' ) {
-						console.log(child.name, " IS NOT A TAG");
-					} else {
+						currentAmount = currentAmount-1;
 						amount.push(currentAmount);
-						console.log(child.name, " IS A TAG, THE LAST ONE FROM SIBLINGS. CURRENT AMOUNT = ", currentAmount)
+						console.log(child.name, " IS NOT A TAG. CURRENT AMOUNT = ", currentAmount);
+						// kviesti save rekursiskai nepridedant +1
+					} else {
+						console.log(child.name, " IS A TAG, THE LAST ONE FROM SIBLINGS. CURRENT AMOUNT = ", currentAmount);
+						// kviesti save rekursiskai pridedant +1
 					}
 	            }
 				else {
-					console.log("NAME", startNode.children[i].name);
-	            	console.log("TYPE", startNode.children[i].type);
-					// when node is not a tag, currentAmount is already increased here 
-					console.log("CURRENT AMOUNT = ", currentAmount);
-
 	            	if ( startNode.children[i].type == 'tag' ) {
-						findAllPaths(startNode.children[i], currentAmount+1);
+
+						console.log("TAG NAME = ", startNode.children[i].name);
+						console.log("TYPE =", startNode.children[i].type);
+						console.log("CURRENT AMOUNT = ", currentAmount);
+
+						findAllPaths(startNode.children[i], currentAmount);
 	            	} 
-					//  TypeError: Cannot read property 'length' of undefined (kuomet textas paduodamas kaip node)
-					// else {
-					// 	findAllPaths(startNode.children[i], currentAmount);
-					// }
+					else {
+						console.log("NOT THE LEST CHILD, NOT A TAG = ", startNode.children[i].name);
+						// change current amount
+						currentAmount = currentAmount-1;
+						amount.push(currentAmount);
+						console.log("CURRENT AMOUNT = ", currentAmount);
+						// kviesti save rekursiskai nepridedant +1
+						//  TypeError: Cannot read property 'length' of undefined (kuomet textas paduodamas kaip node)
+						//findAllPaths(startNode.children[i], currentAmount);
+					}
 	            }
 	        }
 	    }
