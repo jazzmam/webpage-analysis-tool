@@ -57,6 +57,8 @@ getUniqueTagsAndTheirAmount(url)
 
 console.log("MOST COMMON ", mostCommonlyUsedTag)
 
+
+// TODO RETURN A STRING WITH THE LONGEST PATH TAGS HERE
 const getLongestPath = async (urlAddress) => {
 	let amount = [];
 	let maxTagsAmount = 0;
