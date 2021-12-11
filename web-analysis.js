@@ -65,35 +65,48 @@ const getLongestPath = async (urlAddress) => {
 		function findAllPaths(startNode, currentAmount) {
 	        for (var i = 0; i < startNode.children.length; i++) {
 	            var child = startNode.children[i];
-	            if ( child.next == null ) {
-					if ( child.type != 'tag' ) {
-						currentAmount = currentAmount-1;
-						amount.push(currentAmount);
-						console.log(child.name, " IS NOT A TAG. CURRENT AMOUNT = ", currentAmount);
-						// kviesti save rekursiskai nepridedant +1
+	            if ( child.next === null ) {
+					if ( child.type === 'tag' ) {
+						// call itself adding 1 to the amount
+						//currentAmount = currentAmount+1;
+
+						console.log(child.name, "  TAG, THE LAST. TYPE = ", startNode.children[i].type)
+						console.log(" AMOUNT = ", currentAmount+1);
+						amount.push(currentAmount+1);
+						findAllPaths(startNode.children[i], currentAmount+1);
 					} else {
-						console.log(child.name, " IS A TAG, THE LAST ONE FROM SIBLINGS. CURRENT AMOUNT = ", currentAmount);
-						// kviesti save rekursiskai pridedant +1
+						// call itself adding 0 to the amount
+						//currentAmount = currentAmount-1;
+
+						console.log(child.name, " NOT TAG, THE LAST. TYPE = ", startNode.children[i].type)
+						console.log("AMOUNT = ", currentAmount);
+						amount.push(currentAmount);
+
+						//findAllPaths(startNode.children[i], currentAmount);
 					}
 	            }
 				else {
-	            	if ( startNode.children[i].type == 'tag' ) {
+	            	if ( startNode.children[i].type === 'tag' ) {
+						// call itself adding 1 to amount
+						//currentAmount = currentAmount+1;
 
-						console.log("TAG NAME = ", startNode.children[i].name);
-						console.log("TYPE =", startNode.children[i].type);
-						console.log("CURRENT AMOUNT = ", currentAmount);
+						console.log("TAG = ", startNode.children[i].name, " TYPE = ", startNode.children[i].type)
+						console.log( " AMOUNT = ", currentAmount+1);
+						amount.push(currentAmount+1);
 
-						findAllPaths(startNode.children[i], currentAmount);
+						findAllPaths(startNode.children[i], currentAmount+1);
 	            	} 
 					else {
-						console.log("NOT THE LEST CHILD, NOT A TAG = ", startNode.children[i].name);
-						// change current amount
-						currentAmount = currentAmount-1;
+						// call itself adding 0 to amount
+						//currentAmount = currentAmount-1;
+
+						console.log("NOT TAG = ", startNode.children[i].name, " TYPE = ", startNode.children[i].type)
+						console.log(" AMOUNT = ", currentAmount);
 						amount.push(currentAmount);
-						console.log("CURRENT AMOUNT = ", currentAmount);
-						// kviesti save rekursiskai nepridedant +1
-						//  TypeError: Cannot read property 'length' of undefined (kuomet textas paduodamas kaip node)
+
 						//findAllPaths(startNode.children[i], currentAmount);
+
+						//  TypeError: Cannot read property 'length' of undefined (kuomet textas paduodamas kaip node)
 					}
 	            }
 	        }
