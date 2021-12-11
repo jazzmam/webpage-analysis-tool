@@ -54,59 +54,43 @@ const getUniqueTagsAndTheirAmount = async (urlAddress) => {
 // TODO - reuse the code of fetching data - create a helper function
 
 const getLongestPath = async (urlAddress) => {
+	var amount = [];
+	var longestPath = [];
+
 	try {
 		const { data } = await axios.get(urlAddress);
 		const $ = cheerio.load(data);
-		var longestPath = [];
-
-		// when should this array be used?
-		var amount = [];
 
 		function findAllPaths(startNode, currentAmount) {
 	        for (var i = 0; i < startNode.children.length; i++) {
 	            var child = startNode.children[i];
 	            if ( child.next === null ) {
 					if ( child.type === 'tag' ) {
-						// call itself adding 1 to the amount
-						//currentAmount = currentAmount+1;
-
-						console.log(child.name, "  TAG, THE LAST. TYPE = ", startNode.children[i].type)
+						console.log(child.name, "  TAG, THE LAST from siblings. TYPE = ", startNode.children[i].type)
 						console.log(" AMOUNT = ", currentAmount+1);
+
 						amount.push(currentAmount+1);
 						findAllPaths(startNode.children[i], currentAmount+1);
 					} else {
-						// call itself adding 0 to the amount
-						//currentAmount = currentAmount-1;
-
-						console.log(child.name, " NOT TAG, THE LAST. TYPE = ", startNode.children[i].type)
+						console.log(child.name, " NOT TAG, THE LAST from siblings. TYPE = ", startNode.children[i].type)
 						console.log("AMOUNT = ", currentAmount);
-						amount.push(currentAmount);
 
-						//findAllPaths(startNode.children[i], currentAmount);
+						amount.push(currentAmount);
 					}
 	            }
 				else {
 	            	if ( startNode.children[i].type === 'tag' ) {
-						// call itself adding 1 to amount
-						//currentAmount = currentAmount+1;
-
 						console.log("TAG = ", startNode.children[i].name, " TYPE = ", startNode.children[i].type)
 						console.log( " AMOUNT = ", currentAmount+1);
-						amount.push(currentAmount+1);
 
+						amount.push(currentAmount+1);
 						findAllPaths(startNode.children[i], currentAmount+1);
 	            	} 
 					else {
-						// call itself adding 0 to amount
-						//currentAmount = currentAmount-1;
-
 						console.log("NOT TAG = ", startNode.children[i].name, " TYPE = ", startNode.children[i].type)
 						console.log(" AMOUNT = ", currentAmount);
+
 						amount.push(currentAmount);
-
-						//findAllPaths(startNode.children[i], currentAmount);
-
-						//  TypeError: Cannot read property 'length' of undefined (kuomet textas paduodamas kaip node)
 					}
 	            }
 	        }
@@ -114,11 +98,15 @@ const getLongestPath = async (urlAddress) => {
 
 	    findAllPaths($('body')['0'], 1);
 
-		return paths;
+
+		let maxAmount = Math.max(...amount);
+
+		return maxAmount;
 	} catch (error) {
 		throw error;
 	}
 };
 
-getLongestPath(url);
+getLongestPath(url)
+.then( maxAmount => console.log("MAX AMOUNT:::: ", maxAmount));
 
