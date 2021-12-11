@@ -54,43 +54,31 @@ const getUniqueTagsAndTheirAmount = async (urlAddress) => {
 // TODO - reuse the code of fetching data - create a helper function
 
 const getLongestPath = async (urlAddress) => {
-	var amount = [];
-	var longestPath = [];
+	let amount = [];
+	let maxTagsAmount = 0;
 
 	try {
 		const { data } = await axios.get(urlAddress);
 		const $ = cheerio.load(data);
 
-		function findAllPaths(startNode, currentAmount) {
+		function findAllPaths(startNode, currentTagsAmount) {
 	        for (var i = 0; i < startNode.children.length; i++) {
 	            var child = startNode.children[i];
 	            if ( child.next === null ) {
 					if ( child.type === 'tag' ) {
-						console.log(child.name, "  TAG, THE LAST from siblings. TYPE = ", startNode.children[i].type)
-						console.log(" AMOUNT = ", currentAmount+1);
-
-						amount.push(currentAmount+1);
-						findAllPaths(startNode.children[i], currentAmount+1);
+						amount.push(currentTagsAmount+1);
+						findAllPaths(startNode.children[i], currentTagsAmount+1);
 					} else {
-						console.log(child.name, " NOT TAG, THE LAST from siblings. TYPE = ", startNode.children[i].type)
-						console.log("AMOUNT = ", currentAmount);
-
-						amount.push(currentAmount);
+						amount.push(currentTagsAmount);
 					}
 	            }
 				else {
 	            	if ( startNode.children[i].type === 'tag' ) {
-						console.log("TAG = ", startNode.children[i].name, " TYPE = ", startNode.children[i].type)
-						console.log( " AMOUNT = ", currentAmount+1);
-
-						amount.push(currentAmount+1);
-						findAllPaths(startNode.children[i], currentAmount+1);
+						amount.push(currentTagsAmount+1);
+						findAllPaths(startNode.children[i], currentTagsAmount+1);
 	            	} 
 					else {
-						console.log("NOT TAG = ", startNode.children[i].name, " TYPE = ", startNode.children[i].type)
-						console.log(" AMOUNT = ", currentAmount);
-
-						amount.push(currentAmount);
+						amount.push(currentTagsAmount);
 					}
 	            }
 	        }
@@ -98,15 +86,14 @@ const getLongestPath = async (urlAddress) => {
 
 	    findAllPaths($('body')['0'], 1);
 
+		maxTagsAmount = Math.max(...amount);
 
-		let maxAmount = Math.max(...amount);
-
-		return maxAmount;
+		return maxTagsAmount;
 	} catch (error) {
 		throw error;
 	}
 };
 
 getLongestPath(url)
-.then( maxAmount => console.log("MAX AMOUNT:::: ", maxAmount));
+.then( maxTagsAmount => console.log("LONGEST PATH =", maxTagsAmount));
 
