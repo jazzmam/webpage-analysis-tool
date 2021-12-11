@@ -43,15 +43,19 @@ const getUniqueTagsAndTheirAmount = async (urlAddress) => {
 // 	));
 
 // // DON'T REMOVE
-// getUniqueTagsAndTheirAmount(url)
-// 	.then(uniqueTags => 
-// 		console.log( "Most commonly used tag: " +
-// 			uniqueTags.reduce(function(prev, current) {
-// 				     return (prev.amount > current.amount) ? prev : current
-// 				 }).tag
-// 	));
 
-// TODO - reuse the code of fetching data - create a helper function
+// TODO =  assign value of async function to a variable
+// const mostCommonlyUsedTag = 
+
+getUniqueTagsAndTheirAmount(url)
+	.then(uniqueTags => 
+		console.log( "Most commonly used tag: " +
+			uniqueTags.reduce(function(prev, current) {
+				     return (prev.amount > current.amount) ? prev : current
+				 }).tag
+	));
+
+console.log("MOST COMMON ", mostCommonlyUsedTag)
 
 const getLongestPath = async (urlAddress) => {
 	let amount = [];
@@ -94,6 +98,6 @@ const getLongestPath = async (urlAddress) => {
 	}
 };
 
-getLongestPath(url)
-.then( maxTagsAmount => console.log("LONGEST PATH =", maxTagsAmount));
-
+// DON'T REMOVE
+// getLongestPath(url)
+// .then( maxTagsAmount => console.log("LONGEST PATH =", maxTagsAmount));
