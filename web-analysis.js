@@ -55,9 +55,9 @@ const getUniqueTagsAndTheirAmount = async (urlAddress) => {
 const getLongestPath = async (urlAddress) => {
 
 	let highestAmount = 0;
-
-	longestPath = [];
-	currentPath = [];
+	startNodesTag = 'body';
+	let longestPath = [];
+	let currentPath = [startNodesTag];
 
 	try {
 		const { data } = await axios.get(urlAddress);
@@ -69,26 +69,30 @@ const getLongestPath = async (urlAddress) => {
 
 				if ( child.type === 'tag' ) {
 					currentAmount = currentAmount+1;
-
+					currentPath.push(child.name);
 					console.log("LAST TAG ", child.name, " CURRENT AMOUNT ", currentAmount);
-
+					console.log("currentPath ", currentPath);
+					
 					findAllPaths(startNode.children[i], currentAmount);
 				} 
 
 				console.log("HIGHEST AMOUNT BEFORE ", highestAmount);
+
 				if (currentAmount > highestAmount) {
 					highestAmount = currentAmount;
+					longestPath = currentPath;
+
 					console.log("HIGHEST AMOUNT AFTER ", highestAmount);
+					console.log("LONGEST PATH ", longestPath);
 				}
 				currentAmount = 0;
+				currentPath = [startNodesTag];
 	        }
 	    }
 
-	    findAllPaths($('body')['0'], 1);
+	    findAllPaths($(startNodesTag)['0'], 1);
 
-		//maxTagsAmount = Math.max(...currentAmount);
-
-		return highestAmount;
+		return longestPath;
 	} catch (error) {
 		throw error;
 	}
