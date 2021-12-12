@@ -2,6 +2,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const url = 'https://mochajs.org/';
 
+
 const getUniqueTagsAndTheirAmount = async (urlAddress) => {
 	try {
 		const { data } = await axios.get(urlAddress);
@@ -35,23 +36,6 @@ const getUniqueTagsAndTheirAmount = async (urlAddress) => {
 	}
 };
 
-// DON'T REMOVE
-// getUniqueTagsAndTheirAmount(url)
-// 	.then(
-// 		(uniqueTags) => 
-// 			console.log("Unique tags: " + JSON.stringify(uniqueTags.map(tag => tag.tag).join(', '))
-// 	));
-
-// getUniqueTagsAndTheirAmount(url)
-// 	.then(uniqueTags => 
-// 		console.log( "Most commonly used tag: " +
-// 			uniqueTags.reduce(function(prev, current) {
-// 				     return (prev.amount > current.amount) ? prev : current
-// 				 }).tag
-// 	));
-
-
-// TODO RETURN A STRING WITH THE LONGEST PATH TAGS HERE
 const getLongestPath = async (urlAddress) => {
 
 	let highestAmount = 0;
@@ -63,34 +47,27 @@ const getLongestPath = async (urlAddress) => {
 		const { data } = await axios.get(urlAddress);
 		const $ = cheerio.load(data);
 
-		function findAllPaths(startNode, currentAmount) {
+		function findPath(startNode, currentAmount) {
 	        for (var i = 0; i < startNode.children.length; i++) {
 	            var child = startNode.children[i];
 
 				if ( child.type === 'tag' ) {
 					currentAmount = currentAmount+1;
 					currentPath.push(child.name);
-					console.log("LAST TAG ", child.name, " CURRENT AMOUNT ", currentAmount);
-					console.log("currentPath ", currentPath);
 					
-					findAllPaths(startNode.children[i], currentAmount);
-				} 
-
-				console.log("HIGHEST AMOUNT BEFORE ", highestAmount);
+					findPath(startNode.children[i], currentAmount);
+				}
 
 				if (currentAmount > highestAmount) {
 					highestAmount = currentAmount;
 					longestPath = currentPath;
-
-					console.log("HIGHEST AMOUNT AFTER ", highestAmount);
-					console.log("LONGEST PATH ", longestPath);
 				}
 				currentAmount = 0;
 				currentPath = [startNodesTag];
 	        }
 	    }
 
-	    findAllPaths($(startNodesTag)['0'], 1);
+	    findPath($(startNodesTag)['0'], 1);
 
 		return longestPath;
 	} catch (error) {
@@ -99,8 +76,65 @@ const getLongestPath = async (urlAddress) => {
 };
 
 //DON'T REMOVE
-getLongestPath(url)
-.then( maxTagsAmount => console.log("LONGEST PATH =", maxTagsAmount));
+// getUniqueTagsAndTheirAmount(url)
+// 	.then(
+// 		(uniqueTags) => 
+// 			console.log("Unique tags: " + JSON.stringify(uniqueTags.map(tag => tag.tag).join(', '))
+// 	));
 
+// DON'T REMOVE
+// var mostCommonTag = getUniqueTagsAndTheirAmount(url)
+// 	.then(uniqueTags => 
+// 		console.log( "Most commonly used tag: " +
+// 			uniqueTags.reduce(function(prev, current) {
+// 				     return (prev.amount > current.amount) ? prev : current
+// 				 }).tag
+// 	));
 
-// TODO - creae another function here
+const getLongestPathWithMostPopularTag = async (urlAddress) => {
+
+	let highestAmountOfMostPopularTagUse = 0;
+	let startNodesTag = 'body';
+	let mostCommonTag = 'span';
+	let longestPathWithMostPopularTag = [];
+	let currentPath = [startNodesTag];
+
+	try {
+		const { data } = await axios.get(urlAddress);
+		const $ = cheerio.load(data);
+
+		function findPathWhereMostlyUsed(startNode, currentAmount) {
+			for (var i = 0; i < startNode.children.length; i++) {
+				var child = startNode.children[i];
+
+				if ( child.type === 'tag' ) {
+					currentPath.push(child.name);
+
+					if ( child.name === mostCommonTag ) {
+						currentAmount = currentAmount+1;
+					}
+
+					findPathWhereMostlyUsed(startNode.children[i], currentAmount);
+				}
+
+				if (currentAmount > highestAmountOfMostPopularTagUse) {
+					highestAmountOfMostPopularTagUse = currentAmount;
+					longestPathWithMostPopularTag = currentPath;
+				}
+				currentAmount = 0;
+				currentPath = [startNodesTag];
+			}
+		}
+
+		findPathWhereMostlyUsed($(startNodesTag)['0'], 0);
+
+		return longestPathWithMostPopularTag;
+	} catch (error) {
+		throw error;
+	}
+};
+
+getLongestPathWithMostPopularTag(url)
+	.then(longestPathWithMostPopularTag => 
+		console.log("longestPathWithMostPopularTag ", longestPathWithMostPopularTag)
+);
