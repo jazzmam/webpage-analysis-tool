@@ -42,64 +42,61 @@ const getUniqueTagsAndTheirAmount = async (urlAddress) => {
 // 			console.log("Unique tags: " + JSON.stringify(uniqueTags.map(tag => tag.tag).join(', '))
 // 	));
 
-// // DON'T REMOVE
-
-// TODO =  assign value of async function to a variable
-// const mostCommonlyUsedTag = 
-
-getUniqueTagsAndTheirAmount(url)
-	.then(uniqueTags => 
-		console.log( "Most commonly used tag: " +
-			uniqueTags.reduce(function(prev, current) {
-				     return (prev.amount > current.amount) ? prev : current
-				 }).tag
-	));
-
-console.log("MOST COMMON ", mostCommonlyUsedTag)
+// getUniqueTagsAndTheirAmount(url)
+// 	.then(uniqueTags => 
+// 		console.log( "Most commonly used tag: " +
+// 			uniqueTags.reduce(function(prev, current) {
+// 				     return (prev.amount > current.amount) ? prev : current
+// 				 }).tag
+// 	));
 
 
 // TODO RETURN A STRING WITH THE LONGEST PATH TAGS HERE
 const getLongestPath = async (urlAddress) => {
-	let amount = [];
-	let maxTagsAmount = 0;
+
+	let highestAmount = 0;
+
+	longestPath = [];
+	currentPath = [];
 
 	try {
 		const { data } = await axios.get(urlAddress);
 		const $ = cheerio.load(data);
 
-		function findAllPaths(startNode, currentTagsAmount) {
+		function findAllPaths(startNode, currentAmount) {
 	        for (var i = 0; i < startNode.children.length; i++) {
 	            var child = startNode.children[i];
-	            if ( child.next === null ) {
-					if ( child.type === 'tag' ) {
-						amount.push(currentTagsAmount+1);
-						findAllPaths(startNode.children[i], currentTagsAmount+1);
-					} else {
-						amount.push(currentTagsAmount);
-					}
-	            }
-				else {
-	            	if ( startNode.children[i].type === 'tag' ) {
-						amount.push(currentTagsAmount+1);
-						findAllPaths(startNode.children[i], currentTagsAmount+1);
-	            	} 
-					else {
-						amount.push(currentTagsAmount);
-					}
-	            }
+
+				if ( child.type === 'tag' ) {
+					currentAmount = currentAmount+1;
+
+					console.log("LAST TAG ", child.name, " CURRENT AMOUNT ", currentAmount);
+
+					findAllPaths(startNode.children[i], currentAmount);
+				} 
+
+				console.log("HIGHEST AMOUNT BEFORE ", highestAmount);
+				if (currentAmount > highestAmount) {
+					highestAmount = currentAmount;
+					console.log("HIGHEST AMOUNT AFTER ", highestAmount);
+				}
+				currentAmount = 0;
 	        }
 	    }
 
 	    findAllPaths($('body')['0'], 1);
 
-		maxTagsAmount = Math.max(...amount);
+		//maxTagsAmount = Math.max(...currentAmount);
 
-		return maxTagsAmount;
+		return highestAmount;
 	} catch (error) {
 		throw error;
 	}
 };
 
-// DON'T REMOVE
-// getLongestPath(url)
-// .then( maxTagsAmount => console.log("LONGEST PATH =", maxTagsAmount));
+//DON'T REMOVE
+getLongestPath(url)
+.then( maxTagsAmount => console.log("LONGEST PATH =", maxTagsAmount));
+
+
+// TODO - creae another function here
